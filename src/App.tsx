@@ -1,26 +1,43 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Header} from "./components/Header";
+import {Profile} from "./components/Profile/Profile";
+import {ApolloClient, ApolloProvider, createHttpLink, InMemoryCache} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+
+const httpLink = createHttpLink({
+    uri: 'https://baseballcloud-back.herokuapp.com/api/v1/graphql',
+});
+
+const authLink = setContext((_, { headers }) => {
+    // get the authentication token from local storage if it exists
+    //const token = localStorage.getItem('token');
+    // return the headers to the context so httpLink can read them
+    const token = "7KgKoJr5ZDaCMnbH_kcBtA"
+    return {
+        headers: {
+            ...headers,
+            "Access-Token": token ? token : "",
+            "Uid": "test@example.com",
+            "Client": "HF0ID4KStGboThT_pogIYA"
+        }
+    }
+});
+
+const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+});
+
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <ApolloProvider client={client}>
+            <Header/>
+            <Profile/>
+        </ApolloProvider>
+    );
 }
 
 export default App;
