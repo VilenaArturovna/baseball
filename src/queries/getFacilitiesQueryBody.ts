@@ -1,6 +1,4 @@
-import {gql} from "@apollo/client";
-
-export const getFacilities = gql`
+export const getFacilitiesQueryBody = `
     query Facilities($search:String!)
     { facilities(search: $search) {
         facilities {

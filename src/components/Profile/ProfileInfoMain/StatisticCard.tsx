@@ -30,7 +30,7 @@ export const StatisticCard = ({id}: { id: string }) => {
     )
     const battingSummary = data && data.batting_summary
 
-    console.log(data)
+    //console.log(data)
 
     const [activeTab, setActiveTab] = useState<ActiveTabValuesType>("Batting")
     const [battingTab, setBattingTab] = useState<BattingValuesType>("Summary")

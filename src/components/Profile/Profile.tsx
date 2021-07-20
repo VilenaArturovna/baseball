@@ -17,7 +17,7 @@ export type ProfileBattingTopValuesType = {
     launch_angle: number
     pitch_type: string
 }
-type ProfileFacilitiesType = {
+export type FacilityType = {
     id: string
     email: string
     u_name: string
@@ -40,11 +40,11 @@ type ProfileRecentEventsType = {
     id: string
     is_pitcher: boolean
 }
-type ProfileSchoolType = {
+export type SchoolType = {
     id: number
     name: string
 }
-type ProfileTeamType = {
+export type TeamType = {
     id: number
     name: string
 }
@@ -53,7 +53,7 @@ type CurrentProfileType = {
     avatar: string
     bats_hand: "r" | "l"
     biography: string
-    facilities: ProfileFacilitiesType[]
+    facilities: FacilityType[]
     feet: number
     first_name: string
     id: string
@@ -61,9 +61,9 @@ type CurrentProfileType = {
     last_name: string
     position: string
     position2: string
-    school: ProfileSchoolType
+    school: SchoolType
     school_year: string
-    teams: ProfileTeamType[]
+    teams: TeamType[]
     throws_hand: "r" | "l"
     weight: number
 }
@@ -103,9 +103,8 @@ export function Profile() {
         getProfile,
         {variables: {id: "469"}}
     );
-    console.log(data)
     const profile = data && data.profile
-    const [isEditMode, setIsEditMode] = useState(false)
+    const [isEditMode, setIsEditMode] = useState(true)
     return (
         <ProfileBlock>
             {profile &&

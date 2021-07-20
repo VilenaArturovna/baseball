@@ -1,9 +1,12 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
 import avatar from "../../assets/images/logo192.png";
 import {CustomSelect} from "../../assets/components/CustomSelect";
 import {CustomTextField} from "../../assets/components/CustomTextField";
-import {ProfileType} from "./Profile";
+import {FacilityType, ProfileType, SchoolType, TeamType} from "./Profile";
+import {useDispatch, useSelector} from "react-redux";
+import {getFacilities, getSchools, getTeams} from "../../redux/reducers/arrays-reducer";
+import {RootStateType} from "../../redux/store";
 
 type PropsType = {
     offEditMode: () => void
@@ -11,6 +14,17 @@ type PropsType = {
 }
 
 export function ProfileInfoEdit({offEditMode, profile}: PropsType) {
+
+    const schools = useSelector<RootStateType, Array<SchoolType>>(state => state.arrays.schools)
+    const teams = useSelector<RootStateType, Array<TeamType>>(state => state.arrays.teams)
+    const facilities = useSelector<RootStateType, Array<FacilityType>>(state => state.arrays.facilities)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getSchools())
+        dispatch(getTeams())
+        dispatch(getFacilities())
+    }, [])
     return (
         <SideBar>
             <UserInfo>
@@ -24,17 +38,52 @@ export function ProfileInfoEdit({offEditMode, profile}: PropsType) {
             </UserInfo>
             <div>
                 <div style={{width: "100%", marginBottom: "20px", display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    <div style={{marginRight: "8px"}}><CustomTextField label={"First Name"}/></div>
-                    <div style={{marginLeft: "8px"}}><CustomTextField label={"Last Name"}/></div>
+                    <div style={{marginRight: "8px"}}><CustomTextField label={"First Name"} value={profile.first_name}/></div>
+                    <div style={{marginLeft: "8px"}}><CustomTextField label={"Last Name"} value={profile.last_name}/></div>
                 </div>
-                <div style={{width: "100%", marginBottom: "10px", display: "flex", flexDirection: "column"}}>
+                <div style={{width: "100%", marginBottom: "10px"}}>
                     <CustomSelect label={"Position in Game"}/>
                 </div>
-                <div style={{width: "100%", marginBottom: "21px", display: "flex", flexDirection: "column"}}>
+                <div style={{width: "100%", marginBottom: "20px"}}>
                     <CustomSelect label={"Secondary Position in Game"}/>
                 </div>
                 <SubTitle>
                     <SubTitleText>Personal Info</SubTitleText>
+                </SubTitle>
+                <div style={{width: "100%", marginBottom: "10px"}}>
+                    <CustomTextField label={"Ages"} value={profile.age}/>
+                </div>
+                <div style={{width: "100%", marginBottom: "10px", display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                    <div style={{marginRight: "8px"}}><CustomTextField label={"Feet"} value={profile.feet}/></div>
+                    <div style={{marginLeft: "8px"}}><CustomTextField label={"Inches"} value={profile.inches}/></div>
+                </div>
+                <div style={{width: "100%", marginBottom: "10px"}}>
+                    <CustomTextField label={"Weight"} value={profile.weight}/>
+                </div>
+                <div style={{width: "100%", marginBottom: "20px", display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                    <div style={{marginRight: "8px"}}><CustomSelect label={"Throws"} value={profile.throws_hand.toUpperCase()} array={[{id: "1", name: "R"}, {id: "2", name: "L"}]}/></div>
+                    <div style={{marginLeft: "8px"}}><CustomSelect label={"Bats"} value={profile.bats_hand.toUpperCase()} array={[{id: "1", name: "R"}, {id: "2", name: "L"}]}/></div>
+                </div>
+                <SubTitle>
+                    <SubTitleText>School</SubTitleText>
+                </SubTitle>
+                <div style={{width: "100%", marginBottom: "10px"}}>
+                    <CustomSelect label={"School"} array={schools} value={profile.school.name}/>
+                </div>
+                <div style={{width: "100%", marginBottom: "10px"}}>
+                    <CustomSelect label={"School Year"} value={profile.school_year}/>
+                </div>
+                <div style={{width: "100%", marginBottom: "20px"}}>
+                    <CustomSelect label={"Team"} array={teams}/>
+                </div>
+                <SubTitle>
+                    <SubTitleText>Facility</SubTitleText>
+                </SubTitle>
+                <div style={{width: "100%", marginBottom: "20px"}}>
+                    <CustomSelect label={"Facility"} array={facilities} value={facilities.length > 0 ? facilities[0].u_name : ""}/>
+                </div>
+                <SubTitle>
+                    <SubTitleText>About</SubTitleText>
                 </SubTitle>
             </div>
             <ButtonGroup>

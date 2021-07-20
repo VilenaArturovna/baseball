@@ -18,14 +18,14 @@ const theme = createTheme({
 
 type PropsType = {
     label: string
-    value?: string
+    value?: string | number | Array<string>
 }
 
 export function CustomTextField({value, label}: PropsType) {
     return (
         <ThemeProvider theme={theme}>
             <FormControl variant={"outlined"}>
-                <TextField variant="outlined" label={value || label}/>
+                <TextField variant="outlined" label={label} defaultValue={value}/>
             </FormControl>
         </ThemeProvider>
     )

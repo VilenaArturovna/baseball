@@ -3,8 +3,11 @@ import icon from '../assets/images/icon_baseball_cloud.png';
 import avatar from '../assets/images/logo192.png';
 import {useState} from "react";
 import React from "react";
+import {useSelector} from "react-redux";
+import {RootStateType} from "../redux/store";
 
 export function Header() {
+    const isLoggedIn = useSelector<RootStateType, boolean>(state => state.auth.isLoggedIn)
     const [isOpen, setIsOpen] = useState(false)
     const toggle = () => {
         setIsOpen(!isOpen)
@@ -14,33 +17,36 @@ export function Header() {
             <Icon href={'#'}>
                 <IconImage src={icon} alt={'icon'}/>
             </Icon>
-            <NavBar>
-                <GroupElement>
-                    <Nav>
-                        <NavItem href={'#'}>Leaderboard</NavItem>
-                        <NavItem href={'#'}>Network</NavItem>
-                    </Nav>
-                </GroupElement>
-                <GroupElement>
-                    <DropdownSimple>
-                        <UserDiv>
-                            <ImageBox>
-                                <a href={'#'}>
-                                    <UserPhoto src={avatar} alt={"avatar"}/>
-                                </a>
-                            </ImageBox>
-                            <Button onClick={toggle}>
-                                Dmitriy Kryhtin &#9660;
-                            </Button>
-                        </UserDiv>
-                        {isOpen
-                        && <DropdownPanel>
-                            <Ref>My profile</Ref>
-                            <Ref>Log out</Ref>
-                        </DropdownPanel>}
-                    </DropdownSimple>
-                </GroupElement>
-            </NavBar>
+            {isLoggedIn
+            && (
+                <NavBar>
+                    <GroupElement>
+                        <Nav>
+                            <NavItem href={'#'}>Leaderboard</NavItem>
+                            <NavItem href={'#'}>Network</NavItem>
+                        </Nav>
+                    </GroupElement>
+                    <GroupElement>
+                        <DropdownSimple>
+                            <UserDiv>
+                                <ImageBox>
+                                    <a href={'#'}>
+                                        <UserPhoto src={avatar} alt={"avatar"}/>
+                                    </a>
+                                </ImageBox>
+                                <Button onClick={toggle}>
+                                    Dmitriy Kryhtin &#9660;
+                                </Button>
+                            </UserDiv>
+                            {isOpen
+                            && <DropdownPanel>
+                                <Ref>My profile</Ref>
+                                <Ref>Log out</Ref>
+                            </DropdownPanel>}
+                        </DropdownSimple>
+                    </GroupElement>
+                </NavBar>
+            )}
         </HeaderBlock>
     )
 }

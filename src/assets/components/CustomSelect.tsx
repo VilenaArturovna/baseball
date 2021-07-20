@@ -44,23 +44,23 @@ type SchoolType = {
 const items: Array<SchoolType> = [
     {id: "2", name: "FSU"},
     {id: "3", name: "Rockledge"},
-    {id: "4", name: "Good"},
-    {id: "5", name: "asq3t"},
-    {id: "6", name: "fxytdc"},
 ]
 
 type PropsType = {
     label: string
     value?: string
+    array?: Array<any>
 }
 
-export function CustomSelect({label}: PropsType) {
+export function CustomSelect({label, value, array}: PropsType) {
     return (
         <ThemeProvider theme={theme}>
             <FormControl variant={"outlined"}>
                 <InputLabel id={"Schoool"}>{label}</InputLabel>
-                <Select label={"School"} defaultValue={items[2].name} labelId={"Schoool"}>
-                    {items.map(item => <MenuItem key={+item.id} value={item.name}>{item.name}</MenuItem>)}
+                <Select label={"School"} defaultValue={value || items[1].name} labelId={"Schoool"}>
+                    {array
+                    ? array.map(item => <MenuItem key={+item.id} value={item.name}>{item.name || item.u_name}</MenuItem>)
+                    : items.map(item => <MenuItem key={+item.id} value={item.name}>{item.name}</MenuItem>)}
                 </Select>
             </FormControl>
         </ThemeProvider>

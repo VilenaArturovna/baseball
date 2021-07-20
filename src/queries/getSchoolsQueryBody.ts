@@ -1,6 +1,4 @@
-import {gql} from "@apollo/client";
-
-export const getSchools = gql`
+export const getSchoolsQueryBody = `
     query Schools($search:String!) 
     { schools(search: $search) {
         schools {

@@ -1,6 +1,4 @@
-import {gql} from "@apollo/client";
-
-export const getTeams = gql`
+export const getTeamsQueryBody = `
     query Teams($search:String!)
     { teams(search: $search) {
         teams {

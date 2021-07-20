@@ -3,24 +3,20 @@ import './App.css';
 import {Header} from "./components/Header";
 import {Profile} from "./components/Profile/Profile";
 import {ApolloClient, ApolloProvider, createHttpLink, InMemoryCache} from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+import {setContext} from '@apollo/client/link/context';
+import {Provider} from "react-redux";
+import {store} from "./redux/store";
+import {Authentication} from "./components/Auth/Authentication";
+import {headers} from "./api/getDataAPI";
+import {Route, NavLink} from "react-router-dom";
 
 const httpLink = createHttpLink({
     uri: 'https://baseballcloud-back.herokuapp.com/api/v1/graphql',
 });
 
-const authLink = setContext((_, { headers }) => {
-    // get the authentication token from local storage if it exists
-    //const token = localStorage.getItem('token');
-    // return the headers to the context so httpLink can read them
-    const token = "7KgKoJr5ZDaCMnbH_kcBtA"
+const authLink = setContext((_, {}) => {
     return {
-        headers: {
-            ...headers,
-            "Access-Token": token ? token : "",
-            "Uid": "test@example.com",
-            "Client": "HF0ID4KStGboThT_pogIYA"
-        }
+        headers: headers
     }
 });
 
@@ -30,13 +26,16 @@ const client = new ApolloClient({
 });
 
 
-
 function App() {
     return (
-        <ApolloProvider client={client}>
-            <Header/>
-            <Profile/>
-        </ApolloProvider>
+        <Provider store={store}>
+            <ApolloProvider client={client}>
+                <Header/>
+                <Route exact path={'/'} render={()=> <Profile />} />
+                <Route path={'auth'} render={() => <Authentication/>} />
+
+            </ApolloProvider>
+        </Provider>
     );
 }
 
