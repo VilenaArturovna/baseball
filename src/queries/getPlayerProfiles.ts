@@ -1,21 +1,23 @@
 import {gql} from "@apollo/client";
 
-export const setCurrentProfile = gql`
-    { current_profile () {
+export const getPlayerProfiles = gql`
+    query Profiles($input:FilterProfilesInput!)
+    { profiles(input: $input)
+    { profiles
+    {
         id
         first_name
         last_name
         position
         position2
-        avatar
-        throws_hand
-        bats_hand
-        biography
         school_year
         feet
         inches
         weight
         age
+        events {
+            id
+        }
         school {
             id
             name
@@ -24,11 +26,9 @@ export const setCurrentProfile = gql`
             id
             name
         }
-        facilities {
-            id
-            email
-            u_name
-        }
+        favorite
+    }
+        total_count
     }
     }
 `

@@ -5,7 +5,7 @@ import {CustomSelect} from "../../assets/components/CustomSelect";
 import {CustomTextField} from "../../assets/components/CustomTextField";
 import {FacilityType, ProfileType, SchoolType, TeamType} from "./Profile";
 import {useDispatch, useSelector} from "react-redux";
-import {getFacilities, getSchools, getTeams} from "../../redux/reducers/arrays-reducer";
+import {getFacilities, getSchools, getTeams} from "../../redux/reducers/data-reducer";
 import {RootStateType} from "../../redux/store";
 
 type PropsType = {
@@ -15,9 +15,9 @@ type PropsType = {
 
 export function ProfileInfoEdit({offEditMode, profile}: PropsType) {
 
-    const schools = useSelector<RootStateType, Array<SchoolType>>(state => state.arrays.schools)
-    const teams = useSelector<RootStateType, Array<TeamType>>(state => state.arrays.teams)
-    const facilities = useSelector<RootStateType, Array<FacilityType>>(state => state.arrays.facilities)
+    const schools = useSelector<RootStateType, Array<SchoolType>>(state => state.data.schools)
+    const teams = useSelector<RootStateType, Array<TeamType>>(state => state.data.teams)
+    const facilities = useSelector<RootStateType, Array<FacilityType>>(state => state.data.facilities)
     const dispatch = useDispatch()
 
     useEffect(() => {

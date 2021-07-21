@@ -2,11 +2,18 @@ import styled from "styled-components";
 import {useState} from "react";
 import {SignUp} from "./SignUp";
 import {SignIn} from "./SignIn";
+import {useSelector} from "react-redux";
+import {RootStateType} from "../../redux/store";
+import {Redirect} from "react-router-dom";
 
 type ModeType = 'signIn' | 'signUp'
 
 export function Authentication() {
     const [mode, setMode] = useState<ModeType>('signIn')
+    const isLoggedIn = useSelector<RootStateType, boolean>(state => state.auth.isLoggedIn)
+    if (isLoggedIn) {
+        return <Redirect to={'/'}/>
+    }
     return (
         <Container>
             {

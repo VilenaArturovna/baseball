@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {SignUpForm} from "./SignUpForm";
 
 export function SignUp({changeMode}: { changeMode: () => void }) {
     return (
@@ -16,9 +17,7 @@ export function SignUp({changeMode}: { changeMode: () => void }) {
                                 </Text>
                             </TextBox>
                         </RegistrationNote>
-                        <form>
-
-                        </form>
+                        <SignUpForm />
                         <DivToSignIn>
                             <TextBoxx>
                                 Already registered?

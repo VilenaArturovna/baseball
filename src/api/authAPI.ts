@@ -1,4 +1,5 @@
 import axios from "axios";
+import {headers} from "./getDataAPI";
 
 const instance = axios.create({
     baseURL: 'https://baseballcloud-back.herokuapp.com/api/v1/auth'
@@ -35,6 +36,12 @@ export const authAPI = {
         return instance.post<SignInResponseType>('/sign_in', {email, password})
     },
     signOut() {
-        return instance.delete('/sign_out')
+        return instance.delete('/sign_out', {headers})
+    },
+    validateToken() {
+        return instance.get<SignInResponseType>('/validate_token', {headers})
+    },
+    signUp(email: string, password: string, password_confirmation: string, role: string) {
+        return instance.post('', {email, password, password_confirmation, role})
     }
 }

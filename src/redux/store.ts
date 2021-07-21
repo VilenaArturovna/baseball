@@ -1,12 +1,12 @@
 import {combineReducers} from "redux";
-import {arraysReducer} from "./reducers/arrays-reducer";
+import {dataReducer} from "./reducers/data-reducer";
 import thunk from "redux-thunk";
 import {configureStore} from "@reduxjs/toolkit";
 import {authReducer} from "./reducers/auth-reducer";
 
 
 const rootReducer = combineReducers({
-    arrays: arraysReducer,
+    data: dataReducer,
     auth: authReducer
 })
 export const store = configureStore({

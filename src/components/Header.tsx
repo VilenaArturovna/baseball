@@ -1,17 +1,29 @@
 import styled from "styled-components";
 import icon from '../assets/images/icon_baseball_cloud.png';
-import avatar from '../assets/images/logo192.png';
 import {useState} from "react";
 import React from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootStateType} from "../redux/store";
+import {signOut} from "../redux/reducers/auth-reducer";
+import {Redirect, NavLink} from "react-router-dom";
+
 
 export function Header() {
     const isLoggedIn = useSelector<RootStateType, boolean>(state => state.auth.isLoggedIn)
+    const current_profile = useSelector<RootStateType, any>(state => state.data.profile)
     const [isOpen, setIsOpen] = useState(false)
     const toggle = () => {
         setIsOpen(!isOpen)
     }
+    const dispatch = useDispatch()
+    const logOut = () => {
+        dispatch(signOut())
+    }
+
+    if (!isLoggedIn) {
+        return <Redirect to={'/auth'}/>
+    }
+
     return (
         <HeaderBlock>
             <Icon href={'#'}>
@@ -22,26 +34,30 @@ export function Header() {
                 <NavBar>
                     <GroupElement>
                         <Nav>
-                            <NavItem href={'#'}>Leaderboard</NavItem>
-                            <NavItem href={'#'}>Network</NavItem>
+                            <NavItem to={'/leaderboard'}>Leaderboard</NavItem>
+                            <NavItem to={'/network'}>Network</NavItem>
                         </Nav>
                     </GroupElement>
                     <GroupElement>
                         <DropdownSimple>
-                            <UserDiv>
+                            {current_profile
+                            && <UserDiv>
                                 <ImageBox>
                                     <a href={'#'}>
-                                        <UserPhoto src={avatar} alt={"avatar"}/>
+                                        <UserPhoto src={current_profile.avatar} alt={"avatar"}/>
                                     </a>
                                 </ImageBox>
                                 <Button onClick={toggle}>
-                                    Dmitriy Kryhtin &#9660;
+                                    {`${current_profile.first_name} ${current_profile.last_name} `}&#9660;
                                 </Button>
                             </UserDiv>
+                            }
                             {isOpen
                             && <DropdownPanel>
-                                <Ref>My profile</Ref>
-                                <Ref>Log out</Ref>
+                                <NavLink to={'/profile'} style={{textDecoration: 'none'}}>
+                                    <Ref onClick={() => {setIsOpen(false)}}>My profile</Ref>
+                                </NavLink>
+                                <Ref onClick={logOut}>Log out</Ref>
                             </DropdownPanel>}
                         </DropdownSimple>
                     </GroupElement>
@@ -84,7 +100,7 @@ const GroupElement = styled.div`
 const Nav = styled.nav`
   display: flex;
 `
-const NavItem = styled.a`
+const NavItem = styled(NavLink)`
   padding: 0 8px;
   color: #788b99 !important;
   text-decoration: none !important;
@@ -190,4 +206,5 @@ const Ref = styled.a`
   padding: 8px 16px;
   background: #fff;
   line-height: 1;
+  text-decoration: none;
 `

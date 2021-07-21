@@ -5,6 +5,8 @@ import React, {useState} from "react";
 import {ProfileInfoEdit} from "./ProfileInfoEdit";
 import {useQuery} from '@apollo/client';
 import {getProfile} from "../../queries/getProfile";
+import {useSelector} from "react-redux";
+import {RootStateType} from "../../redux/store";
 
 export type ProfileBatterSummaryType = {
     distance: number
@@ -32,6 +34,7 @@ type ProfilePitchingTopValuesType = {
     spin_rate: number
     pitch_type: string
 }
+type PositionType = "Catcher" | "First Base" | "Second Base" | "Shortstop" | "ThirdBase" | "Outfield" | "Pitcher"
 type ProfileRecentEventsType = {
     data_rows_count: number
     date: string
@@ -48,7 +51,7 @@ export type TeamType = {
     id: number
     name: string
 }
-type CurrentProfileType = {
+export type CurrentProfileType = {
     age: number
     avatar: string
     bats_hand: "r" | "l"
@@ -91,17 +94,12 @@ type ProfileData = {
 }
 
 
-//variables types
-type ProfileVars = {
-    id: string;
-}
-
-
 
 export function Profile() {
-    const {loading, data} = useQuery<ProfileData, ProfileVars>(
+    const id = useSelector<RootStateType, string>(state => state.data.profile.id)
+    const {loading, data} = useQuery<ProfileData, { id: string }>(
         getProfile,
-        {variables: {id: "469"}}
+        {variables: {id}}
     );
     const profile = data && data.profile
     const [isEditMode, setIsEditMode] = useState(true)

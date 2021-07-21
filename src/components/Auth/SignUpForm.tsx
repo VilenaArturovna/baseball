@@ -1,19 +1,22 @@
 import {useDispatch} from "react-redux";
 import {useFormik} from "formik";
 import styled from "styled-components";
-import {signIn} from "../../redux/reducers/auth-reducer";
+import {signIn, signUp} from "../../redux/reducers/auth-reducer";
 
 type FormikErrorType = {
     email?: string
     password?: string
+    password_confirmation?: string
 }
 
-export function SignInForm() {
+export function SignUpForm() {
     const dispatch = useDispatch()
     const formik = useFormik({
         initialValues: {
             email: '',
             password: '',
+            password_confirmation: '',
+            role: 'player'
         },
         validate: values => {
             const errors: FormikErrorType = {}
@@ -24,13 +27,18 @@ export function SignInForm() {
             }
             if (!values.password) {
                 errors.password = 'Required'
-            } else if (values.password.length < 4) {
-                errors.password = 'Must be 4 characters or more'
+            } else if (values.password.length < 8) {
+                errors.password = 'Must be 8 characters or more'
+            }
+            if (!values.password_confirmation) {
+                errors.password_confirmation = 'Required'
+            } else if (values.password !== values.password_confirmation) {
+                errors.password_confirmation = 'Passwords are not equal'
             }
             return errors
         },
         onSubmit: async (values, formikHelpers) => {
-            await dispatch(signIn(values))
+            await dispatch(signUp(values))
             /*if (signIn.rejected.match(action)) {
                 if (action.payload?.fieldsErrors && action.payload?.fieldsErrors.length) {
                     const error = action.payload?.fieldsErrors[0]
@@ -45,6 +53,7 @@ export function SignInForm() {
         <Field>
             <FieldMiddle>
                 <TextField
+                    placeholder={'Email'}
                     type={'email'}
                     {...formik.getFieldProps('email')}
                     onBlur={formik.handleBlur}
@@ -56,8 +65,21 @@ export function SignInForm() {
         <Field>
             <FieldMiddle>
                 <TextField
+                    placeholder={'Password'}
                     type="password"
                     {...formik.getFieldProps('password')}
+                    onBlur={formik.handleBlur}
+                />
+            </FieldMiddle>
+            {(formik.touched.password && formik.errors.password) &&
+            <div style={{color: 'red'}}>{formik.errors.password}</div>}
+        </Field>
+        <Field>
+            <FieldMiddle>
+                <TextField
+                    placeholder={'Confirm Password'}
+                    type="password"
+                    {...formik.getFieldProps('password_confirmation')}
                     onBlur={formik.handleBlur}
                 />
             </FieldMiddle>

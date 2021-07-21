@@ -2,13 +2,12 @@ import React, {useState} from "react";
 import styled from "styled-components";
 import {useQuery} from "@apollo/client";
 import {getBattingSummary} from "../../../queries/getBattingSummary";
+import {useSelector} from "react-redux";
+import {RootStateType} from "../../../redux/store";
 
 type ActiveTabValuesType = "Batting" | "Comparison" | "Session Reports"
 type BattingValuesType = "Summary" | "Charts" | "Log"
 
-type ButtonStyleType = {
-    isActive: boolean
-}
 type ValueType = {
     id: number | null
     distance: number
@@ -26,7 +25,7 @@ type GetBattingSummaryType = {
 export const StatisticCard = ({id}: { id: string }) => {
     const {loading, data} = useQuery<GetBattingSummaryType, { id: string }>(
         getBattingSummary,
-        {variables: {id: "415"}}
+        {variables: {id}}
     )
     const battingSummary = data && data.batting_summary
 
@@ -156,7 +155,7 @@ const TableHeading = styled.div`
   display: flex;
   justify-content: flex-start;
 `
-const TableHeadingButton = styled.div<ButtonStyleType>`
+const TableHeadingButton = styled.div<{isActive: boolean}>`
   position: relative;
   list-style: none;
   font-size: 14px;
@@ -165,7 +164,7 @@ const TableHeadingButton = styled.div<ButtonStyleType>`
   cursor: pointer;
   padding: 8px;
   margin: 8px;
-  border: 2px solid #788b99;
+  border: 2px solid #667784;
   border-radius: 40px;
   color: ${props => props.isActive ? '#ffffff' : '#667784'};
   background: ${props => props.isActive ? '#667784' : '#ffffff'};

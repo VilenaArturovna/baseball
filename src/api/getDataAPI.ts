@@ -2,7 +2,8 @@ import axios from "axios";
 import {getSchoolsQueryBody} from "../queries/getSchoolsQueryBody";
 import {getTeamsQueryBody} from "../queries/getTeamsQueryBody";
 import {getFacilitiesQueryBody} from "../queries/getFacilitiesQueryBody";
-import {FacilityType, SchoolType, TeamType} from "../components/Profile/Profile";
+import {CurrentProfileType, FacilityType, SchoolType, TeamType} from "../components/Profile/Profile";
+import {setCurrentProfileQueryBody} from "../queries/setCurrentProfileQueryBody";
 
 export const headers = {
     "Access-Token": localStorage.getItem('access-token'),
@@ -36,5 +37,8 @@ export const getDataAPI = {
             query: getFacilitiesQueryBody,
             variables: {search: ""}
         })
+    },
+    getCurrentProfile() {
+        return instance.post<ResponseType<{ current_profile: CurrentProfileType }>>('', {query: setCurrentProfileQueryBody})
     }
 }

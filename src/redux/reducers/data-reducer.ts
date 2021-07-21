@@ -6,11 +6,23 @@ type InitialStateType = {
     schools: Array<SchoolType>
     teams: Array<TeamType>
     facilities: Array<FacilityType>
+    profile: {
+        id: string
+        avatar: string
+        first_name: string
+        last_name: string
+    }
 }
 const initialState: InitialStateType = {
     schools: [],
     teams: [],
-    facilities: []
+    facilities: [],
+    profile: {
+        id: '',
+        avatar: '',
+        first_name: '',
+        last_name: ''
+    }
 }
 
 export const getSchools = createAsyncThunk('getSchools', async (arg, thunkAPI) => {
@@ -37,9 +49,21 @@ export const getFacilities = createAsyncThunk('getFacilities', async (arg, thunk
         thunkAPI.rejectWithValue(e)
     }
 })
+export const getCurrentProfile = createAsyncThunk('getCurrentProfile', async (arg, thunkAPI) => {
+    const res = await getDataAPI.getCurrentProfile()
+    try {
+        return {profile: {
+            id: res.data.data.current_profile.id,
+            last_name: res.data.data.current_profile.last_name,
+            first_name: res.data.data.current_profile.first_name,
+            avatar: res.data.data.current_profile.avatar}}
+    } catch (e) {
+        thunkAPI.rejectWithValue(e)
+    }
+})
 
 const slice = createSlice({
-    name: "arrays",
+    name: "data",
     initialState,
     reducers: {},
     extraReducers: builder => {
@@ -58,8 +82,13 @@ const slice = createSlice({
             if (payload) {
                 state.facilities = payload.facilities
             }
+        });
+        builder.addCase(getCurrentProfile.fulfilled, (state, {payload}) => {
+            if (payload) {
+                state.profile = payload.profile
+            }
         })
     }
 })
 
-export const arraysReducer = slice.reducer
+export const dataReducer = slice.reducer
