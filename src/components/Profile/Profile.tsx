@@ -5,6 +5,8 @@ import React, {useState} from "react";
 import {ProfileInfoEdit} from "./ProfileInfoEdit";
 import {useQuery} from '@apollo/client';
 import {getProfile} from "../../queries/getProfile";
+import {Preloader} from "../../assets/components/Preloader";
+import {useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {RootStateType} from "../../redux/store";
 
@@ -34,8 +36,7 @@ type ProfilePitchingTopValuesType = {
     spin_rate: number
     pitch_type: string
 }
-type PositionType = "Catcher" | "First Base" | "Second Base" | "Shortstop" | "ThirdBase" | "Outfield" | "Pitcher"
-type ProfileRecentEventsType = {
+export type ProfileRecentEventsType = {
     data_rows_count: number
     date: string
     event_name: string
@@ -96,13 +97,17 @@ type ProfileData = {
 
 
 export function Profile() {
-    const id = useSelector<RootStateType, string>(state => state.data.profile.id)
+    const {id}: {id: string} = useParams()
+    const userId = useSelector<RootStateType, string>(state => state.data.profile.id)
+
+    const currentProfileId = id || userId
     const {loading, data} = useQuery<ProfileData, { id: string }>(
         getProfile,
-        {variables: {id}}
+        {variables: {id: currentProfileId}}
     );
     const profile = data && data.profile
-    const [isEditMode, setIsEditMode] = useState(true)
+    const [isEditMode, setIsEditMode] = useState(false)
+    if (loading) return <Preloader/>
     return (
         <ProfileBlock>
             {profile &&

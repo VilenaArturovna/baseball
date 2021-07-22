@@ -1,9 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import {useQuery} from "@apollo/client";
 import {getBattingSummary} from "../../../queries/getBattingSummary";
-import {useSelector} from "react-redux";
+import {Preloader} from "../../../assets/components/Preloader";
+import {useDispatch, useSelector} from "react-redux";
 import {RootStateType} from "../../../redux/store";
+import {getBattingSummaryTC} from "../../../redux/reducers/data-reducer";
 
 type ActiveTabValuesType = "Batting" | "Comparison" | "Session Reports"
 type BattingValuesType = "Summary" | "Charts" | "Log"
@@ -15,27 +17,35 @@ type ValueType = {
     launch_angle: number | null
     exit_velocity: number
 }
+export type BattingSummaryType = {
+    top_values: Array<ValueType>
+    average_values: Array<ValueType>
+}
 type GetBattingSummaryType = {
-    batting_summary: {
-        top_values: Array<ValueType>
-        average_values: Array<ValueType>
-    }
+    batting_summary: BattingSummaryType
 }
 
 export const StatisticCard = ({id}: { id: string }) => {
-    const {loading, data} = useQuery<GetBattingSummaryType, { id: string }>(
+    //not working((
+    /*const {loading, data} = useQuery<GetBattingSummaryType, { id: string }>(
         getBattingSummary,
         {variables: {id}}
     )
-    const battingSummary = data && data.batting_summary
+    const battingSummaryFromGql = data && data.batting_summary*/
+    const userId = useSelector<RootStateType, string>(state => state.data.profile.id)
 
-    //console.log(data)
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(getBattingSummaryTC({id}))
+    }, [dispatch, id])
+    const battingSummary = useSelector<RootStateType, BattingSummaryType>(state => state.data.battingSummary)
 
     const [activeTab, setActiveTab] = useState<ActiveTabValuesType>("Batting")
     const [battingTab, setBattingTab] = useState<BattingValuesType>("Summary")
+
     const onActiveBatting = () => setActiveTab("Batting")
     const onActiveComparison = () => setActiveTab("Comparison")
-    //const onActiveSessionReports = () => setActiveTab("Session Reports")
+    const onActiveSessionReports = () => setActiveTab("Session Reports")
     const onActiveBattingSummary = () => setBattingTab("Summary")
     const onActiveBattingCharts = () => setBattingTab("Charts")
     const onActiveBattingLog = () => setBattingTab("Log")
@@ -55,6 +65,15 @@ export const StatisticCard = ({id}: { id: string }) => {
                     <TableHeadingButton isActive={activeTab === "Comparison"} onClick={onActiveComparison}>
                         Comparison
                     </TableHeadingButton>
+                    {
+                        userId === id
+                        && (
+                            <TableHeadingButton isActive={activeTab === "Session Reports"}
+                                                onClick={onActiveSessionReports}>
+                                Session Reports
+                            </TableHeadingButton>
+                        )
+                    }
                 </TableHeading>
                 <TablePanel>
                     {activeTab === "Batting"
@@ -155,7 +174,7 @@ const TableHeading = styled.div`
   display: flex;
   justify-content: flex-start;
 `
-const TableHeadingButton = styled.div<{isActive: boolean}>`
+const TableHeadingButton = styled.div<{ isActive: boolean }>`
   position: relative;
   list-style: none;
   font-size: 14px;

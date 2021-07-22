@@ -7,12 +7,6 @@ type PropsType = {
     profile: ProfileType
 }
 
-type FilterProfileEventsInput = {
-    profile_id: string
-    count: number
-    offset: number
-}
-
 export function ProfileInfoMain({profile}: PropsType) {
 
     return (
@@ -58,6 +52,9 @@ const MainBlock = styled.main`
   flex: 2;
   overflow: auto;
   width: calc(100vw - 220px);
+  position: fixed;
+  top: 52px;
+  left: 300px;
 `
 const DivFlexDirectionColumn = styled.div`
   display: flex;

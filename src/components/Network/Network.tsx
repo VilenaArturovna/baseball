@@ -3,7 +3,9 @@ import {useQuery} from "@apollo/client";
 import {getPlayerProfiles} from "../../queries/getPlayerProfiles";
 import {useState} from "react";
 import {SchoolType, TeamType} from "../Profile/Profile";
-import Pagination from "rc-pagination"
+import ReactPaginate from 'react-paginate';
+import {Preloader} from "../../assets/components/Preloader";
+import {NavLink} from "react-router-dom";
 
 const headerColumnsTitle = [
     "Player Name",
@@ -45,13 +47,19 @@ type NetworkVar = {
 
 export function Network() {
     const [pageSize, setPageSize] = useState(10)
+    const [currentPage, setCurrentPage] = useState(0)
     const {loading, data} = useQuery<NetworkData, NetworkVar>(
         getPlayerProfiles,
-        {variables: {input: {profiles_count: pageSize, offset: 0}}}
+        {variables: {input: {profiles_count: pageSize, offset: currentPage * pageSize}}}
     )
+    if (loading) return <Preloader/>
     const players = data && data.profiles.profiles
+    const onChangeCurrentPage = (data: { selected: number }) => {
+        setCurrentPage(data.selected)
+    }
+
     return (
-        <><MainContent>
+        <MainContent>
             <Container>
                 <PageHeader>
                     <TextHeader>Network</TextHeader>
@@ -85,20 +93,22 @@ export function Network() {
                                 && players
                                 && players.map((player) => {
                                     return (
-                                        <TableBodyRow key={player.id}>
-                                            <FirstRow><RowInner>{`${player.first_name} ${player.last_name}`}</RowInner></FirstRow>
-                                            <FirstRow><RowInner>{player.events ? player.events.length : '-'}</RowInner></FirstRow>
-                                            <FirstRow><RowInner>{player.school ? player.school.name : '-'}</RowInner></FirstRow>
-                                            <FirstRow><RowInner>
-                                                {(player.teams && player.teams.length > 0) ? player.teams.map(team => team.name).join(", ") : '-'}
-                                            </RowInner></FirstRow>
-                                            <FirstRow><RowInner>{player.age}</RowInner></FirstRow>
-                                            <FirstRow><RowInner>
-                                                {player.favorite
-                                                    ? <span style={{color: '#48bbff'}}>&#9829;</span>
-                                                    : <span style={{color: '#48bbff'}}>&#9825;</span>}
-                                            </RowInner></FirstRow>
-                                        </TableBodyRow>
+                                        <NavLink to={`/profile/${player.id}`} style={{textDecoration: "none"}} key={player.id}>
+                                            <TableBodyRow >
+                                                <FirstRow><RowInner>{`${player.first_name} ${player.last_name}`}</RowInner></FirstRow>
+                                                <FirstRow><RowInner>{player.events ? player.events.length : '-'}</RowInner></FirstRow>
+                                                <FirstRow><RowInner>{player.school ? player.school.name : '-'}</RowInner></FirstRow>
+                                                <FirstRow><RowInner>
+                                                    {(player.teams && player.teams.length > 0) ? player.teams.map(team => team.name).join(", ") : '-'}
+                                                </RowInner></FirstRow>
+                                                <FirstRow><RowInner>{player.age}</RowInner></FirstRow>
+                                                <FirstRow><RowInner>
+                                                    {player.favorite
+                                                        ? <span style={{color: '#48bbff'}}>&#9829;</span>
+                                                        : <span style={{color: '#48bbff'}}>&#9825;</span>}
+                                                </RowInner></FirstRow>
+                                            </TableBodyRow>
+                                        </NavLink>
                                     )
                                 })
                             }
@@ -107,13 +117,25 @@ export function Network() {
                     <div style={{display: "flex", flexDirection: "row"}}>
                     </div>
                 </TableContent>
-
+                {
+                    data
+                    && <ReactPaginate
+                        previousLabel={<span aria-label="First">«</span>}
+                        nextLabel={<span aria-label="Last">»</span>}
+                        breakLabel={<span aria-label="More">…</span>}
+                        breakClassName={'disabled'}
+                        pageCount={data.profiles.total_count / pageSize}
+                        marginPagesDisplayed={0}
+                        pageRangeDisplayed={2}
+                        onPageChange={onChangeCurrentPage}
+                        containerClassName={'pagination'}
+                        activeClassName={'active'}
+                        forcePage={currentPage}
+                    />}
             </Container>
 
         </MainContent>
-            <Pagination
-                total={data && data.profiles.total_count}
-                style={{display: "flex"}}/></>
+
     )
 };
 

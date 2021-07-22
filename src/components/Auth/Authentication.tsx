@@ -11,8 +11,10 @@ type ModeType = 'signIn' | 'signUp'
 export function Authentication() {
     const [mode, setMode] = useState<ModeType>('signIn')
     const isLoggedIn = useSelector<RootStateType, boolean>(state => state.auth.isLoggedIn)
-    if (isLoggedIn) {
-        return <Redirect to={'/'}/>
+    const userId = useSelector<RootStateType, string>(state => state.data.profile.id)
+
+    if (isLoggedIn && userId) {
+        return <Redirect to={`/profile/${userId}`}/>
     }
     return (
         <Container>

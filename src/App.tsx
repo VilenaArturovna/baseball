@@ -10,14 +10,14 @@ import {headers} from "./api/getDataAPI";
 import {Route} from "react-router-dom";
 import {validateToken} from "./redux/reducers/auth-reducer";
 import {Leaderboard} from "./components/Leaderboard/Leaderboard";
-import {Network} from "./components/Players/Network";
+import {Network} from "./components/Network/Network";
 import {getCurrentProfile} from "./redux/reducers/data-reducer";
 
 const httpLink = createHttpLink({
     uri: 'https://baseballcloud-back.herokuapp.com/api/v1/graphql',
 });
 
-const authLink = setContext((_, {}) => {
+const authLink = setContext((_) => {
     return {
         headers: headers
     }
@@ -35,16 +35,16 @@ function App() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(validateToken())
-    }, [])
+    }, [dispatch])
     useEffect(() => {
         dispatch(getCurrentProfile())
-    }, [])
+    }, [dispatch])
 
     return (
         <ApolloProvider client={client}>
             <Header/>
-            <Route exact path={'/'} render={() => <Profile/>}/>
-            <Route path={'/profile'} render={() => <Profile/>}/>
+            <Route exact path={'/'} render={() => <Profile />}/>
+            <Route path={'/profile/:id?'} render={() => <Profile />}/>
             <Route path={'/auth'} render={() => <Authentication/>}/>
             <Route path={'/leaderboard'} render={() => <Leaderboard/>}/>
             <Route path={'/network'} render={() => <Network/>} />

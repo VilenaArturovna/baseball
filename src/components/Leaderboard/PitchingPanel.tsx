@@ -3,6 +3,8 @@ import {getLeaderboardPitching} from "../../queries/getLeaderboardPitching";
 import {SchoolType, TeamType} from "../Profile/Profile";
 import styled from "styled-components";
 import {useState} from "react";
+import {Preloader} from "../../assets/components/Preloader";
+import {NavLink} from "react-router-dom";
 
 const headerColumnsTitle = [
     "Rank",
@@ -56,7 +58,7 @@ export function PitchingPanel() {
         {variables: {input: {type: "pitch_velocity"}}}
     )
     let leaders = data && data.leaderboard_pitching.leaderboard_pitching
-
+    if (loading) return <Preloader/>
     return (
         <Container>
             <Content>
@@ -89,21 +91,27 @@ export function PitchingPanel() {
                             && leaders
                             && leaders.map((leader, index) => {
                                 return (
-                                    <TableBodyRow key={leader.pitcher_datraks_id}>
-                                        <FirstRow><RowInner>{index + 1}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.pitcher_name}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.age}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.school.name}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.teams.map(team => team.name).join(", ")}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.pitch_type}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.velocity}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.spin_rate}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>
-                                            {leader.favorite
-                                                ? <span style={{color: '#48bbff'}}>&#9829;</span >
-                                                : <span style={{color: '#48bbff'}}>&#9825;</span>}
-                                        </RowInner></FirstRow>
-                                    </TableBodyRow>
+                                    <NavLink
+                                        to={`/profile/${leader.pitcher_datraks_id}`}
+                                        style={{textDecoration: "none"}}
+                                        key={leader.pitcher_datraks_id}
+                                    >
+                                        <TableBodyRow>
+                                            <FirstRow><RowInner>{index + 1}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.pitcher_name}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.age}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.school.name}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.teams.map(team => team.name).join(", ")}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.pitch_type}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.velocity}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.spin_rate}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>
+                                                {leader.favorite
+                                                    ? <span style={{color: '#48bbff'}}>&#9829;</span>
+                                                    : <span style={{color: '#48bbff'}}>&#9825;</span>}
+                                            </RowInner></FirstRow>
+                                        </TableBodyRow>
+                                    </NavLink>
                                 )
                             })
                         }

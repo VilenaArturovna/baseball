@@ -48,7 +48,7 @@ const items: Array<SchoolType> = [
 
 type PropsType = {
     label: string
-    value?: string
+    value?: string | string[]
     array?: Array<any>
 }
 
@@ -66,3 +66,33 @@ export function CustomSelect({label, value, array}: PropsType) {
         </ThemeProvider>
     )
 }
+export function CustomPositionSelect({label, value, array}: PropsType) {
+    return (
+        <ThemeProvider theme={theme}>
+            <FormControl variant={"outlined"}>
+                <InputLabel id={"Schoool"}>{label}</InputLabel>
+                <Select label={"School"} defaultValue={value || items[1].name} labelId={"Schoool"}>
+                    {array
+                        ? array.map((item, index) => <MenuItem key={index} value={item.value}>{item.label}</MenuItem>)
+                        : items.map(item => <MenuItem key={+item.id} value={item.name}>{item.name}</MenuItem>)}
+                </Select>
+            </FormControl>
+        </ThemeProvider>
+    )
+}
+
+export function CustomMultiSelect({label, value, array}: PropsType) {
+    return (
+        <ThemeProvider theme={theme}>
+            <FormControl variant={"outlined"}>
+                <InputLabel id={"Schoool"}>{label}</InputLabel>
+                <Select label={"School"} defaultValue={value || items[1].name} labelId={"Schoool"} multiple={true}>
+                    {array
+                        ? array.map(item => <MenuItem key={+item.id} value={item.name}>{item.name || item.u_name}</MenuItem>)
+                        : items.map(item => <MenuItem key={+item.id} value={item.name}>{item.name}</MenuItem>)}
+                </Select>
+            </FormControl>
+        </ThemeProvider>
+    )
+}
+

@@ -1,6 +1,7 @@
 import {FacilityType, SchoolType, TeamType} from "../../components/Profile/Profile";
 import {getDataAPI} from "../../api/getDataAPI";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {BattingSummaryType} from "../../components/Profile/ProfileInfoMain/StatisticCard";
 
 type InitialStateType = {
     schools: Array<SchoolType>
@@ -12,6 +13,7 @@ type InitialStateType = {
         first_name: string
         last_name: string
     }
+    battingSummary: BattingSummaryType
 }
 const initialState: InitialStateType = {
     schools: [],
@@ -22,6 +24,10 @@ const initialState: InitialStateType = {
         avatar: '',
         first_name: '',
         last_name: ''
+    },
+    battingSummary: {
+        top_values: [],
+        average_values: []
     }
 }
 
@@ -61,6 +67,14 @@ export const getCurrentProfile = createAsyncThunk('getCurrentProfile', async (ar
         thunkAPI.rejectWithValue(e)
     }
 })
+export const getBattingSummaryTC = createAsyncThunk('getBattingSummary', async (params: {id: string}, thunkAPI) => {
+    const res = await getDataAPI.getBattingSummary(params.id)
+    try {
+        return {battingSummary: res.data.data.batting_summary}
+    } catch (e) {
+        thunkAPI.rejectWithValue(e)
+    }
+})
 
 const slice = createSlice({
     name: "data",
@@ -87,7 +101,12 @@ const slice = createSlice({
             if (payload) {
                 state.profile = payload.profile
             }
-        })
+        });
+        builder.addCase(getBattingSummaryTC.fulfilled, (state, {payload}) => {
+            if (payload) {
+                state.battingSummary = payload.battingSummary
+            }
+        });
     }
 })
 

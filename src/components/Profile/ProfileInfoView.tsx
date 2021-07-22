@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import React from "react";
 import {ProfileType} from "./Profile";
+import {useSelector} from "react-redux";
+import {RootStateType} from "../../redux/store";
+import userIcon from "./../../assets/images/user.png"
 
 
 type PropsType = {
@@ -9,11 +12,13 @@ type PropsType = {
 }
 
 export function ProfileInfoView({onEditMode, profile}: PropsType) {
+    const userId = useSelector<RootStateType, string>(state => state.data.profile.id)
+
     return (
         <SideBar>
             <UserInfo>
                 <Avatar>
-                    <ImageBox src={profile.avatar} alt={"avatar"}/>
+                    <ImageBox src={profile.avatar || userIcon} alt={"avatar"}/>
                 </Avatar>
                 <UserName>
                     <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
@@ -24,9 +29,14 @@ export function ProfileInfoView({onEditMode, profile}: PropsType) {
                         <Base>{profile.position2}</Base>
                     </div>
                 </UserName>
-                <EditButton onClick={onEditMode}>
-                    Edit
-                </EditButton>
+                {
+                    userId === profile.id
+                    && (
+                        <EditButton onClick={onEditMode}>
+                            Edit
+                        </EditButton>
+                    )
+                }
             </UserInfo>
             <PersonalInfo>
                 <Item>

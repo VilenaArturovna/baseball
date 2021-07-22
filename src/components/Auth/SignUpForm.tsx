@@ -1,7 +1,7 @@
 import {useDispatch} from "react-redux";
 import {useFormik} from "formik";
 import styled from "styled-components";
-import {signIn, signUp} from "../../redux/reducers/auth-reducer";
+import {signUp} from "../../redux/reducers/auth-reducer";
 
 type FormikErrorType = {
     email?: string

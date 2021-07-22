@@ -4,6 +4,7 @@ import {getTeamsQueryBody} from "../queries/getTeamsQueryBody";
 import {getFacilitiesQueryBody} from "../queries/getFacilitiesQueryBody";
 import {CurrentProfileType, FacilityType, SchoolType, TeamType} from "../components/Profile/Profile";
 import {setCurrentProfileQueryBody} from "../queries/setCurrentProfileQueryBody";
+import {getBattingSummaryQueryBody} from "../queries/getBattingSummaryQueryBody";
 
 export const headers = {
     "Access-Token": localStorage.getItem('access-token'),
@@ -40,5 +41,8 @@ export const getDataAPI = {
     },
     getCurrentProfile() {
         return instance.post<ResponseType<{ current_profile: CurrentProfileType }>>('', {query: setCurrentProfileQueryBody})
+    },
+    getBattingSummary(id: string) {
+        return instance.post('', {query: getBattingSummaryQueryBody, variables: {id}})
     }
 }

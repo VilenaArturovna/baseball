@@ -7,10 +7,16 @@ import {RootStateType} from "../redux/store";
 import {signOut} from "../redux/reducers/auth-reducer";
 import {Redirect, NavLink} from "react-router-dom";
 
+type CurrentProfileType = {
+    id: string
+    last_name: string
+    first_name: string
+    avatar: string
+}
 
 export function Header() {
     const isLoggedIn = useSelector<RootStateType, boolean>(state => state.auth.isLoggedIn)
-    const current_profile = useSelector<RootStateType, any>(state => state.data.profile)
+    const current_profile = useSelector<RootStateType, CurrentProfileType>(state => state.data.profile)
     const [isOpen, setIsOpen] = useState(false)
     const toggle = () => {
         setIsOpen(!isOpen)
@@ -25,10 +31,11 @@ export function Header() {
     }
 
     return (
-        <HeaderBlock>
-            <Icon href={'#'}>
+        <>
+            <HeaderBlock>
+            <NavLink to={`/profile`}>
                 <IconImage src={icon} alt={'icon'}/>
-            </Icon>
+            </NavLink>
             {isLoggedIn
             && (
                 <NavBar>
@@ -43,9 +50,9 @@ export function Header() {
                             {current_profile
                             && <UserDiv>
                                 <ImageBox>
-                                    <a href={'#'}>
+                                    <NavLink to={`/profile`}>
                                         <UserPhoto src={current_profile.avatar} alt={"avatar"}/>
-                                    </a>
+                                    </NavLink>
                                 </ImageBox>
                                 <Button onClick={toggle}>
                                     {`${current_profile.first_name} ${current_profile.last_name} `}&#9660;
@@ -54,8 +61,10 @@ export function Header() {
                             }
                             {isOpen
                             && <DropdownPanel>
-                                <NavLink to={'/profile'} style={{textDecoration: 'none'}}>
-                                    <Ref onClick={() => {setIsOpen(false)}}>My profile</Ref>
+                                <NavLink to={`/profile`} style={{textDecoration: 'none'}}>
+                                    <Ref onClick={() => {
+                                        setIsOpen(false)
+                                    }}>My profile</Ref>
                                 </NavLink>
                                 <Ref onClick={logOut}>Log out</Ref>
                             </DropdownPanel>}
@@ -63,10 +72,14 @@ export function Header() {
                     </GroupElement>
                 </NavBar>
             )}
-        </HeaderBlock>
+        </HeaderBlock></>
     )
 }
 
+const Container = styled.div`
+  position: fixed;
+  z-index: 30;
+`
 const HeaderBlock = styled.header`
   grid-area: hd;
   grid-column-end: span 2;
@@ -78,10 +91,6 @@ const HeaderBlock = styled.header`
   justify-content: space-between;
   flex-wrap: wrap;
   border-bottom: 1px solid rgba(0, 0, 0, .1);
-`
-const Icon = styled.a`
-  color: #337ab7;
-  text-decoration: none;
 `
 const IconImage = styled.img`
   height: 28px;

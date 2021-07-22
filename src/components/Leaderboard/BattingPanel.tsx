@@ -3,6 +3,8 @@ import {useState} from "react";
 import {useQuery} from "@apollo/client";
 import {getLeaderboardBatting} from "../../queries/getLeaderboardBatting";
 import {SchoolType, TeamType} from "../Profile/Profile";
+import {Preloader} from "../../assets/components/Preloader";
+import {NavLink} from "react-router-dom";
 
 const headerColumnsTitle = [
     "Rank",
@@ -60,7 +62,7 @@ export function BattingPanel() {
     } else if  (leaders && filter === 'Carry Distance') {
         leaders = leaders?.sort((prev, next) => prev.distance - next.distance)
     }*/
-
+    if (loading) return <Preloader/>
     return (
         <Container>
             <Content>
@@ -93,21 +95,27 @@ export function BattingPanel() {
                             && leaders
                             && leaders.map((leader, index) => {
                                 return (
-                                    <TableBodyRow key={leader.batter_datraks_id}>
-                                        <FirstRow><RowInner>{index + 1}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.batter_name}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.age}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.school.name}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.teams.map(team => team.name).join(", ")}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.exit_velocity}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.launch_angle}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>{leader.distance}</RowInner></FirstRow>
-                                        <FirstRow><RowInner>
-                                            {leader.favorite
-                                                ? <span style={{color: '#48bbff'}}>&#9829;</span >
-                                                : <span style={{color: '#48bbff'}}>&#9825;</span>}
-                                        </RowInner></FirstRow>
-                                    </TableBodyRow>
+                                    <NavLink
+                                        to={`/profile/${leader.batter_datraks_id}`}
+                                        style={{textDecoration: "none"}}
+                                        key={leader.batter_datraks_id}
+                                    >
+                                        <TableBodyRow>
+                                            <FirstRow><RowInner>{index + 1}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.batter_name}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.age}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.school.name}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.teams.map(team => team.name).join(", ")}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.exit_velocity}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.launch_angle}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>{leader.distance}</RowInner></FirstRow>
+                                            <FirstRow><RowInner>
+                                                {leader.favorite
+                                                    ? <span style={{color: '#48bbff'}}>&#9829;</span>
+                                                    : <span style={{color: '#48bbff'}}>&#9825;</span>}
+                                            </RowInner></FirstRow>
+                                        </TableBodyRow>
+                                    </NavLink>
                                 )
                             })
                         }
