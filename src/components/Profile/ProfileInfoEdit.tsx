@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import {CustomSelect, CustomMultiSelect, CustomPositionSelect} from "../../assets/components/CustomSelect";
-import {CustomTextField} from "../../assets/components/CustomTextField";
+import {CustomTextField, theme} from "../../assets/components/CustomTextField";
 import {CurrentProfileType, FacilityType, ProfileRecentEventsType, ProfileType, SchoolType, TeamType} from "./Profile";
 import {useDispatch, useSelector} from "react-redux";
 import {getFacilities, getSchools, getTeams} from "../../redux/reducers/data-reducer";
@@ -10,6 +10,8 @@ import userIcon from "./../../assets/images/user.png"
 import {useMutation} from "@apollo/client";
 import {ChangeProfile} from "../../queries/changeProfile";
 import {useFormik, FormikProvider} from "formik";
+import {FormControl, TextField} from "@material-ui/core";
+import {ThemeProvider} from "@material-ui/core/styles";
 
 const positions = [
     {label: "Catcher", value: 'catcher'},
@@ -52,12 +54,11 @@ type FormikDataType = {
 }
 
 export function ProfileInfoEdit({offEditMode, profile}: PropsType) {
-    const [onChangeProfile, {data}] = useMutation<ProfileChangeData, ProfileChangeVar>(ChangeProfile)
+    const [onChangeProfile] = useMutation<ProfileChangeData, ProfileChangeVar>(ChangeProfile)
     const schools = useSelector<RootStateType, Array<SchoolType>>(state => state.data.schools)
     const teams = useSelector<RootStateType, Array<TeamType>>(state => state.data.teams)
     const facilities = useSelector<RootStateType, Array<FacilityType>>(state => state.data.facilities)
     const dispatch = useDispatch()
-    const [biography, setBiography] = useState(profile.biography)
     useEffect(() => {
         dispatch(getSchools())
         dispatch(getTeams())
@@ -91,7 +92,7 @@ export function ProfileInfoEdit({offEditMode, profile}: PropsType) {
         onSubmit: async (values: CurrentProfileType) => {
             try {
                 await onChangeProfile({variables: {form: values}})
-            } catch(e) {
+            } catch (e) {
                 console.log(e.message)
             }
         }
@@ -100,170 +101,188 @@ export function ProfileInfoEdit({offEditMode, profile}: PropsType) {
         <FormikProvider value={formik}>
             <form onSubmit={formik.handleSubmit} style={{width: '300px'}}>
                 <SideBar>
-                <UserInfo>
-                    <Avatar>
-                        <ImageBox src={profile.avatar || userIcon} alt={"avatar"}/>
-                    </Avatar>
-                    <InputFile type={'file'} id={"file"} onChange={() => {
-                        'dispatch'
-                    }}/>
-                    <LabelDiv><LabelForInput htmlFor={"file"}>Choose photo</LabelForInput></LabelDiv>
-                </UserInfo>
-                <div>
-                    <div style={{
-                        width: "100%",
-                        marginBottom: "20px",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between"
-                    }}>
-                        <div style={{marginRight: "8px"}}>
-                            <CustomTextField
-                                label={"First Name"}
-                                {...formik.getFieldProps('first_name')}
-                            />
+                    <UserInfo>
+                        <Avatar>
+                            <ImageBox src={profile.avatar || userIcon} alt={"avatar"}/>
+                        </Avatar>
+                        <InputFile type={'file'} id={"file"} onChange={() => {
+                            'dispatch'
+                        }}/>
+                        <LabelDiv><LabelForInput htmlFor={"file"}>Choose photo</LabelForInput></LabelDiv>
+                    </UserInfo>
+                    <ThemeProvider theme={theme}>
+                        <div>
+                            <div style={{
+                                width: "100%",
+                                marginBottom: "20px",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-between"
+                            }}>
+                                <div style={{marginRight: "8px"}}>
+                                    <FormControl variant={"outlined"}>
+                                        <TextField
+                                            variant="outlined"
+                                            label={"First Name"}
+                                            {...formik.getFieldProps('first_name')}
+                                        />
+                                    </FormControl>
+                                </div>
+                                <div style={{marginLeft: "8px"}}>
+                                    <FormControl variant={"outlined"}>
+                                        <TextField
+                                            variant="outlined"
+                                            label={"Last Name"}
+                                            {...formik.getFieldProps('last_name')}
+                                        />
+                                    </FormControl>
+                                </div>
+                            </div>
+                            <div style={{width: "100%", marginBottom: "10px"}}>
+                                <CustomPositionSelect
+                                    label={"Position in Game"}
+                                    {...formik.getFieldProps('position')}
+                                    array={positions}/>
+                            </div>
+                            <div style={{width: "100%", marginBottom: "20px"}}>
+                                <CustomPositionSelect
+                                    label={"Secondary Position in Game"}
+                                    {...formik.getFieldProps('position2')}
+                                    array={positions2}/>
+                            </div>
+                            <SubTitle>
+                                <SubTitleText>Personal Info</SubTitleText>
+                            </SubTitle>
+                            <div style={{width: "100%", marginBottom: "10px"}}>
+                                <FormControl variant={"outlined"}>
+                                    <TextField variant="outlined" label={"Age"} {...formik.getFieldProps('age')}/>
+                                </FormControl>
+                            </div>
+                            <div style={{
+                                width: "100%",
+                                marginBottom: "10px",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-between"
+                            }}>
+                                <div style={{marginRight: "8px"}}>
+                                    <FormControl variant={"outlined"}>
+                                        <TextField
+                                            variant="outlined"
+                                            label={"Feet"}
+                                            {...formik.getFieldProps('feet')}
+                                        />
+                                    </FormControl>
+                                </div>
+                                <div style={{marginLeft: "8px"}}>
+                                    <FormControl variant={"outlined"}>
+                                        <TextField
+                                            variant="outlined"
+                                            label={"Inches"}
+                                            {...formik.getFieldProps('inches')}
+                                        />
+                                    </FormControl>
+                                </div>
+                            </div>
+                            <div style={{width: "100%", marginBottom: "10px"}}>
+                                <FormControl variant={"outlined"}>
+                                    <TextField
+                                        variant="outlined"
+                                        label={"Weight"}
+                                        {...formik.getFieldProps('weight')}
+                                    />
+                                </FormControl>
+                            </div>
+                            <div style={{
+                                width: "100%",
+                                marginBottom: "20px",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-between"
+                            }}>
+                                <div style={{marginRight: "8px"}}>
+                                    <CustomSelect
+                                        label={"Throws"}
+                                        {...formik.getFieldProps('throws_hand')}
+                                        value={profile.throws_hand.toUpperCase()}
+                                        array={[{id: "1", name: "R"}, {id: "2", name: "L"}]}
+                                    />
+                                </div>
+                                <div style={{marginLeft: "8px"}}>
+                                    <CustomSelect
+                                        label={"Bats"}
+                                        {...formik.getFieldProps('bats_hand')}
+                                        value={profile.bats_hand.toUpperCase()}
+                                        array={[{id: "1", name: "R"}, {id: "2", name: "L"}]}
+                                    />
+                                </div>
+                            </div>
+                            <SubTitle>
+                                <SubTitleText>School</SubTitleText>
+                            </SubTitle>
+                            <div style={{width: "100%", marginBottom: "10px"}}>
+                                <CustomSelect
+                                    label={"School"}
+                                    array={schools}
+                                    {...formik.getFieldProps('school')}
+                                    value={profile.school.name}
+                                />
+                            </div>
+                            <div style={{width: "100%", marginBottom: "10px"}}>
+                                <CustomPositionSelect
+                                    label={"School Year"}
+                                    array={schoolYearVariants}
+                                    {...formik.getFieldProps('school_year')}
+                                />
+                            </div>
+                            <div style={{width: "100%", marginBottom: "20px"}}>
+                                <CustomMultiSelect
+                                    label={"Teams"}
+                                    array={teams}
+                                    {...formik.getFieldProps('teams')}
+                                    value={profile.teams.map(team => team.name)}
+                                />
+                            </div>
+                            <SubTitle>
+                                <SubTitleText>Facility</SubTitleText>
+                            </SubTitle>
+                            <div style={{width: "100%", marginBottom: "20px"}}>
+                                <CustomMultiSelect
+                                    label={"Facility"}
+                                    array={facilities}
+                                    {...formik.getFieldProps('facilities')}
+                                    value={profile.facilities.map(facility => facility.u_name)}
+                                />
+                            </div>
+                            <SubTitle>
+                                <SubTitleText>About</SubTitleText>
+                            </SubTitle>
+                            <div style={{
+                                display: 'flex',
+                                position: 'relative',
+                                marginBottom: '15px'
+                            }}>
+                                <div style={{width: "100%", display: "flex", flexDirection: 'column'}}>
+                                    <Textarea
+                                        {...formik.getFieldProps('biography')}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <div style={{marginLeft: "8px"}}>
-                            <CustomTextField
-                                label={"Last Name"}
-                                {...formik.getFieldProps('last_name')}
-                            />
-                        </div>
-                    </div>
-                    <div style={{width: "100%", marginBottom: "10px"}}>
-                        <CustomPositionSelect
-                            label={"Position in Game"}
-                            {...formik.getFieldProps('position')}
-                            array={positions}/>
-                    </div>
-                    <div style={{width: "100%", marginBottom: "20px"}}>
-                        <CustomPositionSelect
-                            label={"Secondary Position in Game"}
-                            {...formik.getFieldProps('position2')}
-                            array={positions2}/>
-                    </div>
-                    <SubTitle>
-                        <SubTitleText>Personal Info</SubTitleText>
-                    </SubTitle>
-                    <div style={{width: "100%", marginBottom: "10px"}}>
-                        <CustomTextField
-                            label={"Age"}
-                            {...formik.getFieldProps('age')}
-                        />
-                    </div>
-                    <div style={{
-                        width: "100%",
-                        marginBottom: "10px",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between"
-                    }}>
-                        <div style={{marginRight: "8px"}}>
-                            <CustomTextField
-                                label={"Feet"}
-                                {...formik.getFieldProps('feet')}                            />
-                        </div>
-                        <div style={{marginLeft: "8px"}}>
-                            <CustomTextField
-                                label={"Inches"}
-                                {...formik.getFieldProps('inches')}                            />
-                        </div>
-                    </div>
-                    <div style={{width: "100%", marginBottom: "10px"}}>
-                        <CustomTextField
-                            label={"Weight"}
-                            {...formik.getFieldProps('weight')}
-                        />
-                    </div>
-                    <div style={{
-                        width: "100%",
-                        marginBottom: "20px",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between"
-                    }}>
-                        <div style={{marginRight: "8px"}}>
-                            <CustomSelect
-                                label={"Throws"}
-                                {...formik.getFieldProps('throws_hand')}
-                                value={profile.throws_hand.toUpperCase()}
-                                array={[{id: "1", name: "R"}, {id: "2", name: "L"}]}
-                            />
-                        </div>
-                        <div style={{marginLeft: "8px"}}>
-                            <CustomSelect
-                                label={"Bats"}
-                                {...formik.getFieldProps('bats_hand')}
-                                value={profile.bats_hand.toUpperCase()}
-                                array={[{id: "1", name: "R"}, {id: "2", name: "L"}]}
-                            />
-                        </div>
-                    </div>
-                    <SubTitle>
-                        <SubTitleText>School</SubTitleText>
-                    </SubTitle>
-                    <div style={{width: "100%", marginBottom: "10px"}}>
-                        <CustomSelect
-                            label={"School"}
-                            array={schools}
-                            {...formik.getFieldProps('school')}
-                            value={profile.school.name}
-                        />
-                    </div>
-                    <div style={{width: "100%", marginBottom: "10px"}}>
-                        <CustomPositionSelect
-                            label={"School Year"}
-                            array={schoolYearVariants}
-                            {...formik.getFieldProps('school_year')}
-                        />
-                    </div>
-                    <div style={{width: "100%", marginBottom: "20px"}}>
-                        <CustomMultiSelect
-                            label={"Teams"}
-                            array={teams}
-                            {...formik.getFieldProps('teams')}
-                            value={profile.teams.map(team => team.name)}
-                        />
-                    </div>
-                    <SubTitle>
-                        <SubTitleText>Facility</SubTitleText>
-                    </SubTitle>
-                    <div style={{width: "100%", marginBottom: "20px"}}>
-                        <CustomMultiSelect
-                            label={"Facility"}
-                            array={facilities}
-                            {...formik.getFieldProps('facilities')}
-                            value={profile.facilities.map(facility => facility.u_name)}
-                        />
-                    </div>
-                    <SubTitle>
-                        <SubTitleText>About</SubTitleText>
-                    </SubTitle>
-                    <div style={{
-                        display: 'flex',
-                        position: 'relative',
-                        marginBottom: '15px'
-                    }}>
-                        <div style={{width: "100%", display: "flex", flexDirection: 'column'}}>
-                            <Textarea
-                                {...formik.getFieldProps('biography')}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <ButtonGroup>
-                    <ButtonItem onClick={offEditMode} style={{marginRight: "12px"}}>Cancel</ButtonItem>
-                    <ButtonItem
-                        type={"submit"}
-                        style={{
-                            color: "#ffffff",
-                            backgroundColor: "#48bbff",
-                            border: "solid 1px transparent"
-                        }}>
-                        Save
-                    </ButtonItem>
-                </ButtonGroup>
-            </SideBar></form>
+                    </ThemeProvider>
+                    <ButtonGroup>
+                        <ButtonItem onClick={offEditMode} style={{marginRight: "12px"}}>Cancel</ButtonItem>
+                        <ButtonItem
+                            type={"submit"}
+                            style={{
+                                color: "#ffffff",
+                                backgroundColor: "#48bbff",
+                                border: "solid 1px transparent"
+                            }}>
+                            Save
+                        </ButtonItem>
+                    </ButtonGroup>
+                </SideBar></form>
         </FormikProvider>
     )
 }
